@@ -2,6 +2,7 @@
 import Page from '../layouts/Page.astro';
 import site from '../site.config.ts';
 const updated = 'October 20, 2026';
+const cookiesOn = Boolean(site.ga4 || site.adsense);
 ---
 <Page title="Privacy Policy" description={`How ${site.name} handles your data, cookies and ads.`}>
   <p>Last updated: {updated}</p>
@@ -15,7 +16,9 @@ const updated = 'October 20, 2026';
   <h2>Advertising and third-party vendors</h2>
   <p>We may show ads from Google AdSense and other third-party vendors. Third-party vendors, including Google, use cookies to serve ads based on your earlier visits to this and other websites. Google's use of advertising cookies lets it and its partners serve ads to you based on your visit to our site and other sites on the internet.</p>
   <p>You can opt out of personalized advertising in <a href="https://adssettings.google.com" rel="noopener">Google Ads Settings</a>. You can also visit <a href="https://www.aboutads.info" rel="noopener">aboutads.info</a> to opt out of some third-party vendors' use of cookies for personalized advertising.</p>
-  <p>Right now the site sets no advertising or analytics cookies. If ads or analytics are turned on, consent is shown through Google's consent message where the law requires it. You can also change your choice in your browser settings or by clearing cookies.</p>
+  {cookiesOn
+    ? <p>Where the law requires it, consent is shown through Google's consent message. You can also change your choice in your browser settings or by clearing cookies.</p>
+    : <p>Right now the site sets no advertising or analytics cookies. If ads or analytics are turned on later, consent will be shown through Google's consent message where the law requires it. You can also change your choice in your browser settings or by clearing cookies.</p>}
   <h2>Your browser's local storage</h2>
   <p>The site saves your light or dark theme choice in your browser. This stays on your device.</p>
   <h2>Children</h2>

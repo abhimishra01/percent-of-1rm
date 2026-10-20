@@ -30,21 +30,16 @@ const jsonLd = [
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [{ '@type': 'ListItem', position: 1, name: site.name, item: `${base}/` }],
-  },
+  }
 ];
 ---
 <Base jsonLd={jsonLd}>
-  <section class="mx-auto max-w-5xl px-4 pt-10 sm:pt-16">
-    <h1 class="max-w-3xl text-3xl font-extrabold leading-[1.05] tracking-tight [text-wrap:balance] sm:text-6xl">
+  <section class="mx-auto max-w-5xl px-4 pt-8 sm:pt-10">
+    <h1 class="max-w-3xl text-3xl font-extrabold leading-[1.05] tracking-tight [text-wrap:balance] sm:text-5xl">
       {site.h1}
     </h1>
-    <p class="mt-4 hidden max-w-2xl text-lg text-muted sm:block">{site.description}</p>
-    <div class="mt-5 sm:mt-8"><Tool /></div>
+    <p class="mt-3 hidden max-w-2xl text-lg text-muted sm:block">{site.description}</p>
+    <div class="mt-5 sm:mt-6"><Tool /></div>
     <AdSlot />
   </section>
   <Article />

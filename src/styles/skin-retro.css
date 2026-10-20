@@ -37,7 +37,6 @@
 :root[data-skin="retro"][data-theme] header a:first-child { font-family: var(--font-slab); }
 :root[data-skin="retro"][data-theme] header nav a[aria-current="page"] { background: none; box-shadow: inset 0 -3px 0 var(--brand-ink); border-radius: 0; }
 :root[data-skin="retro"][data-theme] #theme-toggle { border: 2px solid var(--edge); background: var(--card); box-shadow: 2px 2px 0 var(--shadow-ink); }
-:root[data-skin="retro"][data-theme] main > section:first-child > p:first-child { border: 2px solid var(--ink); background: var(--card); color: var(--ink); text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; }
 :root[data-skin="retro"][data-theme] main h1 { font-family: var(--font-slab); font-weight: 700; letter-spacing: -0.01em; line-height: 1.02; }
 :root[data-skin="retro"][data-theme] .prose-site h2, :root[data-skin="retro"][data-theme] #faq-h { font-family: var(--font-slab); font-weight: 700; letter-spacing: 0; }
 :root[data-skin="retro"][data-theme] footer { border-top: 2px solid var(--ink); }
@@ -50,18 +49,12 @@
 :root[data-skin="retro"][data-theme] #tool legend, :root[data-skin="retro"][data-theme] #tool label.block, :root[data-skin="retro"][data-theme] #tool h2 { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; }
 :root[data-skin="retro"][data-theme] #tool input[type="text"] { border: 2px solid var(--edge); border-radius: 8px; background: var(--fill); }
 :root[data-skin="retro"][data-theme] #tool input[type="text"]:focus { box-shadow: none; outline: 3px solid var(--brand-ink); outline-offset: 2px; }
-:root[data-skin="retro"][data-theme] .step { border-radius: 8px; }
-:root[data-skin="retro"][data-theme] .chip { border-radius: 999px; }
-:root[data-skin="retro"][data-theme] .step:active, :root[data-skin="retro"][data-theme] .chip:active { transform: translate(3px, 3px); box-shadow: none; background: var(--card); }
-:root[data-skin="retro"][data-theme] .peer:checked + .seg-face { background: var(--brand); border-color: var(--edge); color: #fff; box-shadow: none; transform: translate(3px, 3px); }
-:root[data-skin="retro"][data-theme] #result-box { background: var(--brand); color: #fff; border: 2px solid var(--ink); border-radius: 10px; box-shadow: 4px 4px 0 var(--shadow-ink); }
-:root[data-skin="retro"][data-theme] #result-box > p:first-child { color: #fff; font-size: .8rem; letter-spacing: .1em; }
+:root[data-skin="retro"][data-theme] .result { background: var(--brand); color: #fff; border: 2px solid var(--ink); border-radius: 10px; box-shadow: 4px 4px 0 var(--shadow-ink); }
 :root[data-skin="retro"][data-theme] #tool thead { background: var(--brand-soft); }
 :root[data-skin="retro"][data-theme] #tool .overflow-x-auto { border: 2px solid var(--ink); border-radius: 10px; }
-:root[data-skin="retro"][data-theme] #res-pct-big, :root[data-skin="retro"][data-theme] #res-pct-text, :root[data-skin="retro"][data-theme] #res-rev-text, :root[data-skin="retro"][data-theme] #result-box > p { color: #fff; }
+:root[data-skin="retro"][data-theme] .result, :root[data-skin="retro"][data-theme] .result p { color: #fff; }
 :root[data-skin="retro"][data-theme] #res-pct-big { font-family: var(--font-slab); }
 :root[data-skin="retro"][data-theme] #res-pct-text, :root[data-skin="retro"][data-theme] #res-rev-text { font-family: var(--font-slab); font-size: 1.0625rem; }
-:root[data-skin="retro"][data-theme] #result-box .rule { border-color: rgb(255 255 255 / .55); }
 :root[data-skin="retro"][data-theme] .tbl tbody tr.hit { background: var(--brand-soft); box-shadow: inset 4px 0 0 var(--brand-ink); }
 :root[data-skin="retro"][data-theme] .seg-face, :root[data-skin="retro"][data-theme] .step, :root[data-skin="retro"][data-theme] .chip { border: 2px solid var(--edge); border-radius: 10px; background: var(--card); box-shadow: 3px 3px 0 var(--shadow-ink); }
 :root[data-skin="retro"][data-theme] .step { border-radius: 8px; }
