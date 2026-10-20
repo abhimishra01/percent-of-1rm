@@ -1,0 +1,17 @@
+---
+import Page from '../layouts/Page.astro';
+import site from '../site.config.ts';
+import { url } from '../lib/url.ts';
+---
+<Page title="About" description={`About ${site.name}: a free percent of 1RM calculator for lifters.`}>
+  <p>{site.name} turns your one rep max into the weight for any percent of it, from 50 to 100 percent. It rounds each weight to a load the bar can make and shows the plates for each side. It works in pounds and kilograms.</p>
+  <h2>What it does</h2>
+  <p>It gives the answer as you type. You can also enter a weight and see what percent of your 1RM it is, and read a table of estimated weights for 1 to 12 reps.</p>
+  <h2>How it works</h2>
+  <p>Each weight is your 1RM times the percent. Because plates go on both sides, a bar changes in jumps of twice the smallest plate. The tool rounds to the nearest of those loads. The Exact column shows the unrounded number. The rep table uses two published formulas: Epley (1985) and Brzycki (1993). They are estimates, and the page says so. The sources are listed in the article on the home page.</p>
+  <p>The calculator runs in your browser and does not send what you type. We do not ask you to create an account. Your settings stay on your device.</p>
+  <h2>A note on safety</h2>
+  <p>This tool helps with arithmetic. It does not replace a coach, and it is not medical advice. Warm up, use a spotter or safeties on heavy sets, and ask a doctor before you test a max if you have an injury or a heart or blood pressure condition.</p>
+  <h2>Contact</h2>
+  <p>Questions or ideas? Write to <a href={`mailto:${site.email}`}>{site.email}</a> or visit the <a href={url('contact/')}>Contact page</a>.</p>
+</Page>

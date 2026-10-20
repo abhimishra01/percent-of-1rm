@@ -1,0 +1,11 @@
+// FAQ items. Rendered on the home page AND output as FAQPage JSON-LD. Plain text only.
+export const faq = [
+  { q: 'How do I calculate a percent of my 1RM?', a: 'Multiply your 1RM by the percent as a decimal. For a 225 lb 1RM, 85 percent is 225 x 0.85 = 191.25 lb. The calculator does this for every percent from 50 to 100 and then rounds to a weight the bar can load.' },
+  { q: 'What is a 1RM?', a: '1RM means one rep max: the heaviest weight you can lift once with good form. You can test it, or estimate it from a hard set of a few reps. If you only have an estimate, treat every number here as a guide.' },
+  { q: 'Why do the loads not match the exact weight?', a: 'A bar only loads in jumps of twice the smallest plate, because plates go on both sides. With 2.5 lb plates the jump is 5 lb. The Exact column shows the true percent. The Load column shows the nearest weight you can build.' },
+  { q: 'How do I find what percent a weight is?', a: 'Divide the weight by your 1RM and multiply by 100. If your 1RM is 225 lb, then 185 lb is 185 / 225 = 82.2 percent. Type the weight in the "Find the percent of a weight" box to see it, with a rep estimate.' },
+  { q: 'What do Epley and Brzycki mean?', a: 'They are two published formulas that link reps to a max. Epley (1985) says 1RM = weight x (1 + reps / 30). Brzycki (1993) says 1RM = weight x 36 / (37 - reps). The rep table here runs both backwards, to show the weight you might lift for a set number of reps. They are estimates, and they work best for 10 reps or fewer.' },
+  { q: 'Is training at a percent of 1RM safe?', a: 'Percent training is a common way to plan loads, but a number is no guarantee. Warm up first, use a spotter or safeties on heavy sets, and lower the weight if your form breaks down. If you have an injury or a heart or blood pressure condition, ask a doctor before you test a max. This page is not medical advice.' },
+  { q: 'What is a training max?', a: 'Some programs work from a "training max" set below your true 1RM, often 90 percent of it. If your program says so, enter the training max in the 1RM box instead of your true max.' },
+  { q: 'Does this work in kilograms?', a: 'Yes. Switch the unit at the top. Your 1RM converts to the nearest 2.5 kg, and the bar and plate choices change to kilogram sizes. You can also type any kilogram value you like.' },
+];

@@ -1,0 +1,347 @@
+---
+// Percent of 1RM calculator UI. Logic lives in src/lib/percent.js (tested by npm test).
+---
+<section id="tool" aria-label="Percent of 1RM calculator" class="rounded-2xl border border-line bg-card p-4 sm:p-6 sm:shadow-[6px_6px_0_0_var(--line)]">
+  <noscript><p class="mb-4 rounded-xl bg-brand-soft p-3 text-sm">This calculator needs JavaScript. The article below lists the formulas, so you can work out any percent by hand.</p></noscript>
+  <!-- Order: units and 1RM, result, other inputs, chart. A phone shows them in this order; a desktop pairs them in two columns. -->
+  <div class="flex flex-col gap-6 md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:items-start md:gap-x-8">
+
+    <div class="space-y-5">
+      <fieldset>
+        <legend class="mb-2 text-sm font-semibold">Units</legend>
+        <div class="grid grid-cols-2 gap-2" id="unit-group">
+          <label class="seg"><input type="radio" name="unit" value="lb" class="peer sr-only" checked /><span class="seg-face">Pounds (lb)</span></label>
+          <label class="seg"><input type="radio" name="unit" value="kg" class="peer sr-only" /><span class="seg-face">Kilograms (kg)</span></label>
+        </div>
+      </fieldset>
+
+      <div>
+        <label for="onerm" class="mb-2 block text-sm font-semibold">Your 1RM <span id="unit-label" class="font-normal text-muted">(lb)</span></label>
+        <div class="flex items-stretch gap-2">
+          <button type="button" id="dec" class="step" aria-label="Subtract one step from your 1RM">&minus;</button>
+          <input id="onerm" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" value="225" aria-describedby="res-pct-text"
+            class="num h-14 min-w-0 flex-1 rounded-xl border border-edge bg-paper px-3 text-center font-mono text-3xl font-bold tabular-nums outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 aria-[invalid=true]:border-red-600" />
+          <button type="button" id="inc" class="step" aria-label="Add one step to your 1RM">+</button>
+        </div>
+        <div id="chips" class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Common 1RM values"></div>
+      </div>
+    </div>
+
+    <div class="min-w-0">
+      <div class="min-h-[13rem] rounded-xl bg-brand-soft p-4" id="result-box">
+        <p id="res-pct-label" class="text-sm font-semibold uppercase tracking-wide text-brand-ink">85% of your 1RM</p>
+        <p id="res-pct-big" class="mt-1 min-h-[3rem] font-mono text-4xl font-bold tabular-nums"></p>
+        <p id="res-pct-text" role="status" aria-live="polite" class="mt-1 min-h-[3.25rem] text-base font-medium"></p>
+        <hr class="rule my-3 border-t border-line" />
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand-ink">Weight to percent</p>
+        <p id="res-rev-text" role="status" aria-live="polite" class="mt-1 min-h-[4.5rem] text-base font-medium"></p>
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <div>
+        <label for="pct" class="mb-2 block text-sm font-semibold">Your own percent</label>
+        <div class="flex items-center gap-2">
+          <input id="pct" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" value="85" aria-describedby="res-pct-text"
+            class="num h-12 w-28 rounded-xl border border-edge bg-paper px-3 text-center font-mono text-xl font-bold tabular-nums outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 aria-[invalid=true]:border-red-600" />
+          <span class="text-lg font-semibold" aria-hidden="true">%</span>
+        </div>
+        <div id="pct-chips" class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Common percents">
+          {[70, 75, 80, 85, 90, 95].map((p) => <button type="button" class="chip" data-p={p}>{p}%</button>)}
+        </div>
+      </div>
+
+      <div>
+        <label for="wt" class="mb-2 block text-sm font-semibold">Find the percent of a weight <span id="wt-unit" class="font-normal text-muted">(lb)</span></label>
+        <input id="wt" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" value="185" aria-describedby="res-rev-text"
+          class="num h-12 w-40 rounded-xl border border-edge bg-paper px-3 text-center font-mono text-xl font-bold tabular-nums outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 aria-[invalid=true]:border-red-600" />
+      </div>
+
+      <fieldset>
+        <legend class="mb-2 text-sm font-semibold">Bar</legend>
+        <div class="flex flex-wrap gap-2" id="bar-group"></div>
+        <div id="custom-bar-wrap" class="mt-2 hidden items-center gap-2">
+          <label for="custom-bar" class="text-sm text-muted">Bar weight</label>
+          <input id="custom-bar" type="text" inputmode="decimal" autocomplete="off" value="25"
+            class="num h-12 w-28 rounded-xl border border-edge bg-paper px-3 text-center font-mono text-lg font-semibold tabular-nums outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 aria-[invalid=true]:border-red-600" />
+          <span id="custom-bar-unit" class="text-sm text-muted">lb</span>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="mb-1 text-sm font-semibold">Smallest plate you have</legend>
+        <p class="mb-2 text-sm text-muted">Weights round to what the bar can load with it, one on each side.</p>
+        <div class="flex flex-wrap gap-2" id="small-group"></div>
+      </fieldset>
+    </div>
+
+    <div class="min-w-0">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h2 class="text-lg font-bold" id="chart-h">Percent chart</h2>
+        <fieldset class="m-0 border-0 p-0">
+          <legend class="sr-only">Chart step</legend>
+          <div class="flex gap-2" id="step-group">
+            <label class="seg"><input type="radio" name="step" value="10" class="peer sr-only" /><span class="seg-face seg-sm">10%</span></label>
+            <label class="seg"><input type="radio" name="step" value="5" class="peer sr-only" checked /><span class="seg-face seg-sm">5%</span></label>
+            <label class="seg"><input type="radio" name="step" value="2.5" class="peer sr-only" /><span class="seg-face seg-sm">2.5%</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="mt-3 overflow-x-auto rounded-xl border border-line">
+        <table class="tbl w-full min-w-[19rem] text-left text-sm">
+          <caption class="sr-only">Percent of your 1RM, from 100 percent down to 50 percent: exact weight, loadable weight and plates on each side</caption>
+          <thead class="bg-brand-soft text-xs uppercase tracking-wide text-brand-ink">
+            <tr><th scope="col" class="px-3 py-2 font-semibold">%</th><th scope="col" class="px-3 py-2 font-semibold">Exact</th><th scope="col" class="px-3 py-2 font-semibold">Load</th><th scope="col" class="px-3 py-2 font-semibold">Each side</th></tr>
+          </thead>
+          <tbody id="chart-body" class="divide-y divide-line"></tbody>
+        </table>
+      </div>
+      <p id="chart-note" class="mt-2 min-h-[1.25rem] text-xs text-muted"></p>
+    </div>
+  </div>
+
+  <h2 class="mt-8 text-lg font-bold" id="rep-h">Rep max estimates</h2>
+  <p class="mt-1 text-sm text-muted">Estimates, not promises. Each cell is the weight you could likely lift for that many reps, from the Epley and Brzycki formulas, rounded to a load the bar can make. Accuracy drops above 10 reps.</p>
+  <div class="mt-3 overflow-x-auto rounded-xl border border-line">
+    <table class="tbl w-full min-w-[19rem] text-left text-sm">
+      <caption class="sr-only">Estimated weight for 1 to 12 reps, by Epley and by Brzycki, as a share of your 1RM</caption>
+      <thead class="bg-brand-soft text-xs uppercase tracking-wide text-brand-ink">
+        <tr><th scope="col" class="px-3 py-2 font-semibold">Reps</th><th scope="col" class="px-3 py-2 font-semibold">Epley</th><th scope="col" class="px-3 py-2 font-semibold">Brzycki</th></tr>
+      </thead>
+      <tbody id="rep-body" class="divide-y divide-line"></tbody>
+    </table>
+  </div>
+</section>
+
+<style is:global>
+  .seg-face { display:flex; min-height:3rem; align-items:center; justify-content:center; border-radius:.75rem; border:1px solid var(--edge); background:var(--paper); padding:.5rem .9rem; font-weight:600; font-size:.95rem; cursor:pointer; text-align:center; transition:background-color .12s,border-color .12s; user-select:none; font-variant-numeric:tabular-nums; }
+  .seg-face.seg-sm { min-height:2.75rem; min-width:3.5rem; padding:.35rem .8rem; }
+  .seg-face:hover { border-color: var(--brand); }
+  .peer:checked + .seg-face { background: var(--brand); border-color: var(--brand); color:#fff; }
+  .peer:focus-visible + .seg-face { outline:2px solid var(--brand-ink); outline-offset:2px; }
+  .step { width:3.5rem; flex:none; border-radius:.75rem; border:1px solid var(--edge); background:var(--paper); font-size:1.75rem; font-weight:600; line-height:1; cursor:pointer; }
+  .step:hover { border-color: var(--brand); }
+  .step:active { background: var(--brand-soft); }
+  .chip { min-height:2.75rem; min-width:3.25rem; padding:.25rem .75rem; border-radius:999px; border:1px solid var(--edge); background:var(--paper); font-weight:600; font-size:.9rem; font-variant-numeric:tabular-nums; cursor:pointer; }
+  .chip:hover { border-color: var(--brand); }
+  .tbl td, .tbl th { vertical-align: top; }
+  .tbl tbody tr.hit { background: var(--brand-soft); }
+  .tbl .load { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; white-space: nowrap; }
+  .tbl .sub { display:block; font-size:.75rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+</style>
+<script>
+  import { SMALLEST, DEFAULT_SMALLEST, BARS, MAX_WEIGHT, platesFor, chart, repTable, row, repsAtFraction, percentFromWeight, describeSide, convertTarget, convertWeight, parseNumber, fmt, fmt1 } from '../lib/percent.js';
+
+  type Unit = 'lb' | 'kg';
+  const QUICK: Record<Unit, number[]> = { lb: [135, 185, 225, 275, 315, 405], kg: [60, 80, 100, 120, 140, 180] };
+  const STEP: Record<Unit, number> = { lb: 5, kg: 2.5 };
+  const DEFAULT_CUSTOM: Record<Unit, number> = { lb: 25, kg: 10 };
+  const KEY = 'pct1rm-v1';
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const isWeight = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x) && x >= 0 && x <= MAX_WEIGHT;
+
+  const state = {
+    unit: 'lb' as Unit,
+    oneRm: 225,
+    pct: 85,
+    wt: 185,
+    chartStep: 5,
+    bar: { lb: '45', kg: '20' } as Record<Unit, string>,
+    customBar: { ...DEFAULT_CUSTOM } as Record<Unit, number>,
+    smallest: { ...DEFAULT_SMALLEST } as Record<Unit, number>,
+  };
+
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (s && typeof s === 'object') {
+      if (s.unit === 'lb' || s.unit === 'kg') state.unit = s.unit;
+      if (isWeight(s.oneRm) && s.oneRm > 0) state.oneRm = s.oneRm;
+      if (isWeight(s.pct) && s.pct <= 200) state.pct = s.pct;
+      if (isWeight(s.wt)) state.wt = s.wt;
+      if ([10, 5, 2.5].includes(s.chartStep)) state.chartStep = s.chartStep;
+      for (const u of ['lb', 'kg'] as Unit[]) {
+        if (s.bar && typeof s.bar[u] === 'string' && (s.bar[u] === 'custom' || (BARS[u] as number[]).map(String).includes(s.bar[u]))) state.bar[u] = s.bar[u];
+        if (s.customBar && isWeight(s.customBar[u])) state.customBar[u] = s.customBar[u];
+        if (s.smallest && (SMALLEST[u] as number[]).includes(s.smallest[u])) state.smallest[u] = s.smallest[u];
+      }
+    }
+  } catch {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+
+  // The last 1RM the person typed, so a unit round trip returns to it (225 lb, 102.5 kg, 225 lb).
+  let anchor = { unit: state.unit, oneRm: state.oneRm };
+
+  const barWeight = () => { const id = state.bar[state.unit]; return id === 'custom' ? state.customBar[state.unit] : Number(id); };
+  const show = (id: string, on: boolean) => { $(id).classList.toggle('hidden', !on); $(id).classList.toggle('flex', on); };
+
+  function buildStatic() {
+    const u = state.unit;
+    (document.querySelector(`input[name=unit][value=${u}]`) as HTMLInputElement).checked = true;
+    (document.querySelector(`input[name=step][value="${state.chartStep}"]`) as HTMLInputElement).checked = true;
+    $('unit-label').textContent = `(${u})`;
+    $('wt-unit').textContent = `(${u})`;
+    $('custom-bar-unit').textContent = u;
+    $<HTMLInputElement>('onerm').value = fmt(state.oneRm);
+    $<HTMLInputElement>('pct').value = fmt(state.pct);
+    $<HTMLInputElement>('wt').value = state.wt > 0 ? fmt(state.wt) : '';
+    $<HTMLInputElement>('custom-bar').value = fmt(state.customBar[u]);
+    $('chips').innerHTML = QUICK[u].map((w) => `<button type="button" class="chip" data-w="${w}">${w}</button>`).join('');
+    const bars = [
+      ...(BARS[u] as number[]).map((w, i) => ({ id: String(w), label: `${i === 0 ? 'Standard' : 'Women’s'} ${w} ${u}` })),
+      { id: 'custom', label: 'Custom' },
+    ];
+    $('bar-group').innerHTML = bars.map((b) =>
+      `<label class="seg"><input type="radio" name="bar" value="${b.id}" class="peer sr-only"${b.id === state.bar[u] ? ' checked' : ''} /><span class="seg-face">${b.label}</span></label>`).join('');
+    show('custom-bar-wrap', state.bar[u] === 'custom');
+    $('small-group').innerHTML = (SMALLEST[u] as number[]).map((w) =>
+      `<label class="seg"><input type="radio" name="small" value="${w}" class="peer sr-only"${w === state.smallest[u] ? ' checked' : ''} /><span class="seg-face">${fmt(w)} ${u}</span></label>`).join('');
+  }
+
+  const td = (html: string, cls = '') => `<td class="px-3 py-2.5 tabular-nums ${cls}">${html}</td>`;
+  const sideText = (r: { side: any; load: number }, bar: number) =>
+    r.side === null ? 'Not loadable' : r.load <= bar ? 'Bar only' : describeSide(r.side);
+
+  function render() {
+    const u = state.unit;
+    const bar = barWeight();
+    const smallest = state.smallest[u];
+    const plates = platesFor(u, smallest);
+    const oneRm = state.oneRm;
+
+    const bigEl = $('res-pct-big'), textEl = $('res-pct-text'), revEl = $('res-rev-text');
+    $('res-pct-label').textContent = `${fmt1(state.pct)}% of your 1RM`;
+
+    const bad = !(oneRm > 0) || !Number.isFinite(bar) || bar > MAX_WEIGHT;
+    if (bad) {
+      bigEl.textContent = 'Enter a number';
+      textEl.textContent = !(oneRm > 0) ? 'Enter your 1RM above 0 to see the weights.' : 'Enter the bar weight to see the plates.';
+      revEl.textContent = '';
+      $('chart-body').innerHTML = '';
+      $('rep-body').innerHTML = '';
+      $('chart-note').textContent = '';
+      save();
+      return;
+    }
+
+    // Own percent
+    if (state.pct > 0) {
+      const r = row({ oneRm, pct: state.pct, bar, smallest, plates });
+      bigEl.textContent = `${fmt(r.load)} ${u}`;
+      const exact = fmt(+r.exact.toFixed(2));
+      const sideTxt = r.below || r.load <= bar ? 'That is under the bar, so the bar alone is the lightest load.'
+        : r.side ? `Each side: ${describeSide(r.side)}.` : '';
+      textEl.textContent = `Exact ${exact} ${u}, rounded to a load your plates can make. ${sideTxt}`;
+    } else {
+      bigEl.textContent = '-';
+      textEl.textContent = 'Enter a percent above 0.';
+    }
+
+    // Weight to percent
+    if (state.wt > 0) {
+      const p = percentFromWeight(oneRm, state.wt);
+      const base = `${fmt(state.wt)} ${u} is ${fmt1(p)}% of your ${fmt(oneRm)} ${u} 1RM.`;
+      if (p > 100) revEl.textContent = `${base} That is above your 1RM. Update your 1RM if you lifted it.`;
+      else {
+        const reps = repsAtFraction(p / 100);
+        revEl.textContent = reps ? `${base} Rep estimate: about ${reps.epley} reps (Epley) or ${reps.brzycki} reps (Brzycki).${reps.epley > 12 || reps.brzycki > 12 ? ' Estimates above 12 reps are rough.' : ''}` : base;
+      }
+    } else revEl.textContent = 'Enter a weight to see its percent of your 1RM.';
+
+    // Chart
+    const rows = chart({ oneRm, step: state.chartStep, bar, smallest, plates });
+    let anyBelow = false;
+    $('chart-body').innerHTML = rows.map((r) => {
+      if (r.below) anyBelow = true;
+      const hit = Math.abs(r.pct - state.pct) < 1e-9 ? ' class="hit"' : '';
+      return `<tr${hit}><th scope="row" class="px-3 py-2.5 font-semibold tabular-nums">${fmt(r.pct)}%</th>${td(fmt(+r.exact.toFixed(2)), 'text-muted')}${td(`${fmt(r.load)}`, 'load')}${td(sideText(r, bar))}</tr>`;
+    }).join('');
+    $('chart-note').textContent = anyBelow ? 'A row under the bar weight shows the bar, the lightest load possible.' : '';
+
+    // Rep max estimates
+    const cell = (c: { pct: number; load: number }) => td(`<span class="load">${fmt(c.load)}</span><span class="sub">${fmt1(c.pct)}% &middot; ${describeCell(c.load)}</span>`);
+    const describeCell = (load: number) => { const r = row({ oneRm: load, pct: 100, bar, smallest, plates }); return r.load <= bar ? 'bar only' : r.side ? describeSide(r.side) : ''; };
+    $('rep-body').innerHTML = repTable({ oneRm, bar, smallest, plates }).map((r) =>
+      `<tr><th scope="row" class="px-3 py-2.5 font-semibold tabular-nums">${r.reps}</th>${cell(r.epley)}${cell(r.brzycki)}</tr>`).join('');
+    save();
+  }
+
+  function setOneRm(v: number) {
+    if (!(v > 0)) return;
+    state.oneRm = Math.min(v, MAX_WEIGHT);
+    anchor = { unit: state.unit, oneRm: state.oneRm };
+    $<HTMLInputElement>('onerm').value = fmt(state.oneRm);
+    $('onerm').removeAttribute('aria-invalid');
+    render();
+  }
+  const nudge = (dir: 1 | -1) => setOneRm(Math.max(STEP[state.unit], (state.oneRm || 0) + dir * STEP[state.unit]));
+
+  // Number fields: bad text shows the invalid state and a message; blur puts the used value back.
+  function numberField(id: string, get: () => number, set: (v: number) => void, max: number) {
+    const el = $<HTMLInputElement>(id);
+    el.addEventListener('input', () => {
+      const v = parseNumber(el.value);
+      const blank = el.value.trim() === '';
+      el.setAttribute('aria-invalid', String((!blank && Number.isNaN(v)) || v > max));
+      set(Number.isNaN(v) ? 0 : Math.min(v, max));
+      if (v > max) el.value = fmt(max);
+      render();
+    });
+    el.addEventListener('blur', () => { if (get() > 0) { el.value = fmt(get()); el.removeAttribute('aria-invalid'); } });
+  }
+  numberField('onerm', () => state.oneRm, (v) => { state.oneRm = v; anchor = { unit: state.unit, oneRm: v }; }, MAX_WEIGHT);
+  numberField('pct', () => state.pct, (v) => { state.pct = v; }, 200);
+  numberField('wt', () => state.wt, (v) => { state.wt = v; }, MAX_WEIGHT);
+  // Custom bar: a blank or bad value must not hide behind an old one.
+  {
+    const el = $<HTMLInputElement>('custom-bar');
+    el.addEventListener('input', () => {
+      const v = parseNumber(el.value);
+      state.customBar[state.unit] = Number.isFinite(v) && v <= MAX_WEIGHT ? v : NaN;
+      el.setAttribute('aria-invalid', String(!Number.isFinite(state.customBar[state.unit])));
+      render();
+    });
+    el.addEventListener('blur', () => {
+      if (!Number.isFinite(state.customBar[state.unit])) { state.customBar[state.unit] = DEFAULT_CUSTOM[state.unit]; render(); }
+      el.value = fmt(state.customBar[state.unit]);
+      el.removeAttribute('aria-invalid');
+    });
+  }
+
+  $('onerm').addEventListener('keydown', (e) => {
+    if ((e as KeyboardEvent).key === 'ArrowUp') { e.preventDefault(); nudge(1); }
+    if ((e as KeyboardEvent).key === 'ArrowDown') { e.preventDefault(); nudge(-1); }
+  });
+  $('inc').addEventListener('click', () => nudge(1));
+  $('dec').addEventListener('click', () => nudge(-1));
+  $('chips').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button[data-w]') as HTMLElement | null;
+    if (b) setOneRm(Number(b.dataset.w));
+  });
+  $('pct-chips').addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button[data-p]') as HTMLElement | null;
+    if (!b) return;
+    state.pct = Number(b.dataset.p);
+    $<HTMLInputElement>('pct').value = fmt(state.pct);
+    $('pct').removeAttribute('aria-invalid');
+    render();
+  });
+  $('unit-group').addEventListener('change', (e) => {
+    const to = (e.target as HTMLInputElement).value as Unit;
+    if (to === state.unit) return;
+    state.oneRm = anchor.unit === to && anchor.oneRm > 0 ? anchor.oneRm : convertTarget(state.oneRm, state.unit, to);
+    if (state.wt > 0) state.wt = Math.round(convertWeight(state.wt, state.unit, to) * 2) / 2;
+    state.unit = to;
+    buildStatic(); render();
+  });
+  $('step-group').addEventListener('change', (e) => { state.chartStep = Number((e.target as HTMLInputElement).value); render(); });
+  $('bar-group').addEventListener('change', (e) => {
+    state.bar[state.unit] = (e.target as HTMLInputElement).value;
+    show('custom-bar-wrap', state.bar[state.unit] === 'custom');
+    render();
+  });
+  $('small-group').addEventListener('change', (e) => { state.smallest[state.unit] = Number((e.target as HTMLInputElement).value); render(); });
+
+  buildStatic();
+  render();
+</script>

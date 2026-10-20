@@ -1,0 +1,70 @@
+/* Skin: Retro print. Cream paper, 2px ink borders, hard offset shadows, slab headings, faint halftone.
+   Tokens first, then surface rules. Switched by data-skin="retro" on <html>. */
+:root[data-skin="retro"] {
+  --paper: #f1e6d2;
+  --card: #fbf4e6;
+  --ink: #241c17;
+  --muted: #5e4f44;
+  --line: #cdbda3;          /* hairlines, decoration only */
+  --edge: #241c17;          /* input and button edges (WCAG 1.4.11) */
+  --fill: #fffaf0;          /* input fill */
+  --shadow-ink: #241c17;
+  --dots: rgb(36 28 23 / .07);
+  --brand-ink: color-mix(in oklab, var(--brand) 85%, black);
+  --brand-soft: color-mix(in oklab, var(--brand) 14%, #fbf4e6);
+  --font-slab: Rockwell, "Roboto Slab", "Rockwell Nova", Clarendon, Georgia, serif;
+}
+:root[data-skin="retro"][data-theme="dark"] {
+  --paper: #1b1512;
+  --card: #261e19;
+  --ink: #f1e6d2;
+  --muted: #c2b2a2;
+  --line: #43362d;
+  --edge: #f1e6d2;
+  --fill: #1f1814;
+  --shadow-ink: #000000;
+  --dots: rgb(241 230 210 / .05);
+  --brand-ink: color-mix(in oklab, var(--brand) 50%, white);
+  --brand-soft: color-mix(in oklab, var(--brand) 28%, #261e19);
+}
+:root[data-skin="retro"][data-theme] body { background: transparent; }
+:root[data-skin="retro"][data-theme] body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(var(--dots) 1px, transparent 1.4px); background-size: 6px 6px; }
+:root[data-skin="retro"][data-theme] :focus-visible { outline: 3px solid var(--brand-ink); outline-offset: 2px; }
+
+/* Header, hero, footer */
+:root[data-skin="retro"][data-theme] header { border-bottom: 2px solid var(--ink); background: var(--paper); backdrop-filter: none; }
+:root[data-skin="retro"][data-theme] header img { border: 2px solid var(--ink); border-radius: 50%; }
+:root[data-skin="retro"][data-theme] header a:first-child { font-family: var(--font-slab); }
+:root[data-skin="retro"][data-theme] header nav a[aria-current="page"] { background: none; box-shadow: inset 0 -3px 0 var(--brand-ink); border-radius: 0; }
+:root[data-skin="retro"][data-theme] #theme-toggle { border: 2px solid var(--edge); background: var(--card); box-shadow: 2px 2px 0 var(--shadow-ink); }
+:root[data-skin="retro"][data-theme] main > section:first-child > p:first-child { border: 2px solid var(--ink); background: var(--card); color: var(--ink); text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; }
+:root[data-skin="retro"][data-theme] main h1 { font-family: var(--font-slab); font-weight: 700; letter-spacing: -0.01em; line-height: 1.02; }
+:root[data-skin="retro"][data-theme] .prose-site h2, :root[data-skin="retro"][data-theme] #faq-h { font-family: var(--font-slab); font-weight: 700; letter-spacing: 0; }
+:root[data-skin="retro"][data-theme] footer { border-top: 2px solid var(--ink); }
+:root[data-skin="retro"][data-theme] .prose-site th, :root[data-skin="retro"][data-theme] .tbl thead th { background: var(--brand-soft); }
+:root[data-skin="retro"][data-theme] .prose-site th, :root[data-skin="retro"][data-theme] .prose-site td { border-bottom: 1px solid var(--line); }
+:root[data-skin="retro"][data-theme] #faq-h + div { border-color: var(--ink); }
+
+/* Tool */
+:root[data-skin="retro"][data-theme] #tool { border: 2px solid var(--ink); border-radius: 14px; background: var(--card); box-shadow: 6px 6px 0 var(--shadow-ink); }
+:root[data-skin="retro"][data-theme] #tool legend, :root[data-skin="retro"][data-theme] #tool label.block, :root[data-skin="retro"][data-theme] #tool h2 { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; }
+:root[data-skin="retro"][data-theme] #tool input[type="text"] { border: 2px solid var(--edge); border-radius: 8px; background: var(--fill); }
+:root[data-skin="retro"][data-theme] #tool input[type="text"]:focus { box-shadow: none; outline: 3px solid var(--brand-ink); outline-offset: 2px; }
+:root[data-skin="retro"][data-theme] .step { border-radius: 8px; }
+:root[data-skin="retro"][data-theme] .chip { border-radius: 999px; }
+:root[data-skin="retro"][data-theme] .step:active, :root[data-skin="retro"][data-theme] .chip:active { transform: translate(3px, 3px); box-shadow: none; background: var(--card); }
+:root[data-skin="retro"][data-theme] .peer:checked + .seg-face { background: var(--brand); border-color: var(--edge); color: #fff; box-shadow: none; transform: translate(3px, 3px); }
+:root[data-skin="retro"][data-theme] #result-box { background: var(--brand); color: #fff; border: 2px solid var(--ink); border-radius: 10px; box-shadow: 4px 4px 0 var(--shadow-ink); }
+:root[data-skin="retro"][data-theme] #result-box > p:first-child { color: #fff; font-size: .8rem; letter-spacing: .1em; }
+:root[data-skin="retro"][data-theme] #tool thead { background: var(--brand-soft); }
+:root[data-skin="retro"][data-theme] #tool .overflow-x-auto { border: 2px solid var(--ink); border-radius: 10px; }
+:root[data-skin="retro"][data-theme] #res-pct-big, :root[data-skin="retro"][data-theme] #res-pct-text, :root[data-skin="retro"][data-theme] #res-rev-text, :root[data-skin="retro"][data-theme] #result-box > p { color: #fff; }
+:root[data-skin="retro"][data-theme] #res-pct-big { font-family: var(--font-slab); }
+:root[data-skin="retro"][data-theme] #res-pct-text, :root[data-skin="retro"][data-theme] #res-rev-text { font-family: var(--font-slab); font-size: 1.0625rem; }
+:root[data-skin="retro"][data-theme] #result-box .rule { border-color: rgb(255 255 255 / .55); }
+:root[data-skin="retro"][data-theme] .tbl tbody tr.hit { background: var(--brand-soft); box-shadow: inset 4px 0 0 var(--brand-ink); }
+:root[data-skin="retro"][data-theme] .seg-face, :root[data-skin="retro"][data-theme] .step, :root[data-skin="retro"][data-theme] .chip { border: 2px solid var(--edge); border-radius: 10px; background: var(--card); box-shadow: 3px 3px 0 var(--shadow-ink); }
+:root[data-skin="retro"][data-theme] .step { border-radius: 8px; }
+:root[data-skin="retro"][data-theme] .chip { border-radius: 999px; }
+:root[data-skin="retro"][data-theme] .step:active, :root[data-skin="retro"][data-theme] .chip:active { transform: translate(3px, 3px); box-shadow: none; background: var(--card); }
+:root[data-skin="retro"][data-theme] .peer:checked + .seg-face { background: var(--brand); border-color: var(--edge); color: #fff; box-shadow: none; transform: translate(3px, 3px); }

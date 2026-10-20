@@ -1,0 +1,74 @@
+---
+// SEO article. The worked example tables are computed from the same code as the tool, so they cannot drift.
+import site from '../site.config.ts';
+import { url } from '../lib/url.ts';
+import { chart, repTable, platesFor, describeSide, fmt, fmt1 } from '../lib/percent.js';
+
+const plates = platesFor('lb', 2.5);
+const example = chart({ oneRm: 225, step: 5, bar: 45, smallest: 2.5, plates });
+const reps = repTable({ oneRm: 225, bar: 45, smallest: 2.5, plates }).filter((r) => [1, 3, 5, 8, 10, 12].includes(r.reps));
+---
+<section aria-labelledby="about-tool" class="mx-auto max-w-5xl px-4 pt-16">
+  <article class="prose-site">
+    <h2 id="about-tool" style="margin-top:0">What is a percent of 1RM calculator?</h2>
+    <p>A percent of 1RM calculator turns your one rep max into the weight for any percent of it. Many strength programs write loads this way: "3 sets of 5 at 80 percent." You need the number in pounds or kilograms, and you need to know which plates to load. This page does both. Type your 1RM at the top and the full chart appears at once, from 100 percent down to 50 percent.</p>
+
+    <h2>How to use it</h2>
+    <ol>
+      <li>Pick pounds or kilograms.</li>
+      <li>Enter your 1RM, or tap a common value.</li>
+      <li>Choose your bar and the smallest plate your gym has.</li>
+      <li>Read the Load column. It shows the nearest weight the bar can make, and the plates for each side.</li>
+      <li>Use "Your own percent" for a number that is not in the chart, such as 82.5 percent.</li>
+    </ol>
+    <p>To go the other way, type a weight in the "Find the percent of a weight" box. The page tells you what share of your 1RM that weight is.</p>
+
+    <h2>The formula</h2>
+    <p>The math is one step: <strong>weight = 1RM x percent / 100</strong>. For a 225 lb max, 85 percent is 225 x 85 / 100 = 191.25 lb. Nobody can load 191.25 lb. A bar changes in jumps of twice the smallest plate, since you add a plate to each side. With 2.5 lb plates, the jump is 5 lb. The calculator rounds to the nearest load the bar can make above the bar weight, so 191.25 lb becomes 190 lb. The Exact column keeps the true value so you can see how far the rounding moved it.</p>
+
+    <h2>Worked example: a 225 lb 1RM</h2>
+    <p>This table uses a 45 lb bar and a smallest plate of 2.5 lb. The chart on this page gives the same numbers.</p>
+    <div class="overflow-x-auto"><table>
+      <caption class="sr-only">Percent chart for a 225 lb 1RM on a 45 lb bar</caption>
+      <thead><tr><th scope="col">Percent</th><th scope="col">Exact (lb)</th><th scope="col">Load (lb)</th><th scope="col">Plates each side</th></tr></thead>
+      <tbody>
+        {example.map((r) => <tr><th scope="row">{fmt(r.pct)}%</th><td>{fmt(+r.exact.toFixed(2))}</td><td>{fmt(r.load)}</td><td>{describeSide(r.side)}</td></tr>)}
+      </tbody>
+    </table></div>
+
+    <h2>Reps and percent of 1RM</h2>
+    <p>Lighter weights allow more reps. Researchers have published formulas that link the two. Two common ones are Epley (1985) and Brzycki (1993):</p>
+    <ul>
+      <li><strong>Epley:</strong> 1RM = weight x (1 + reps / 30)</li>
+      <li><strong>Brzycki:</strong> 1RM = weight x 36 / (37 - reps)</li>
+    </ul>
+    <p>Turn either one around and you get the weight for a given number of reps. For a 225 lb max:</p>
+    <div class="overflow-x-auto"><table>
+      <caption class="sr-only">Estimated weight for common rep counts, for a 225 lb 1RM</caption>
+      <thead><tr><th scope="col">Reps</th><th scope="col">Epley</th><th scope="col">Brzycki</th></tr></thead>
+      <tbody>
+        {reps.map((r) => <tr><th scope="row">{r.reps}</th><td>{fmt(r.epley.load)} lb ({fmt1(r.epley.pct)}%)</td><td>{fmt(r.brzycki.load)} lb ({fmt1(r.brzycki.pct)}%)</td></tr>)}
+      </tbody>
+    </table></div>
+    <p>These are estimates. People differ, lifts differ, and the formulas drift apart above about 10 reps. Use them as a starting point and adjust to how the set feels.</p>
+
+    <h2>Common percents at a glance</h2>
+    <p>Read the table the other way and you can guess how hard a percent is. By both formulas, 90 percent is a set of about 3 to 5 reps, 85 percent is about 5 or 6, 80 percent is about 7 or 8, and 75 percent is about 10. 70 percent is about 12 reps, and below that the estimates get loose. Treat these as rough guides, since sleep, stress and the lift itself all change what you can do on the day.</p>
+    <p>One more note on rounding. The tool rounds to the nearest load, so a result can sit a little above or below the exact figure. If you prefer to stay under it, drop to the lighter load in the chart, one jump down.</p>
+
+    <h2>Sources</h2>
+    <ul>
+      <li>Epley, B. (1985). <em>Poundage Chart.</em> Lincoln, NE: Body Enterprises.</li>
+      <li>Brzycki, M. (1993). Strength testing: predicting a one-rep max from reps-to-fatigue. <em>Journal of Physical Education, Recreation &amp; Dance, 64</em>(1), 88-90.</li>
+    </ul>
+
+    <h2>Tips</h2>
+    <ul>
+      <li>If your program uses a training max, enter that number as your 1RM. It is often set below a true max.</li>
+      <li>An estimated 1RM from a set of reps is less exact than a tested one. Round it down if unsure.</li>
+      <li>If you have an injury, or a heart or blood pressure condition, ask a doctor before you test a max. This page is not medical advice.</li>
+      <li>Use safeties or a spotter on heavy sets.</li>
+    </ul>
+    <p>The calculator runs in your browser. Your numbers stay on your device. See the <a href={url('privacy/')}>privacy policy</a> and the <a href={url('about/')}>about page</a> for more.</p>
+  </article>
+</section>

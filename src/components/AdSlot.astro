@@ -1,0 +1,11 @@
+---
+// Ad slot under the tool. Renders nothing until an AdSense ID is set in site.config.ts.
+// Never place it between the inputs and the result.
+import site from '../site.config.ts';
+const on = site.adsense.trim() !== '';
+---
+{on && (
+  <aside aria-label="Advertisement" class="mx-auto mt-8 flex min-h-[100px] w-full max-w-[320px] flex-col items-center justify-center rounded-lg border border-dashed border-line text-muted sm:min-h-[90px] sm:max-w-[728px]">
+    <span class="text-[11px] uppercase tracking-widest">Advertisement</span>
+  </aside>
+)}
