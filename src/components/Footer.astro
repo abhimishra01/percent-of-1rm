@@ -7,6 +7,7 @@ const links = [
   { href: url('contact/'), label: 'Contact' },
   { href: url('privacy/'), label: 'Privacy Policy' },
   { href: url('terms/'), label: 'Terms' },
+  ...(site.bingemind ? [{ href: 'https://bingemind.com/tools/', label: 'More free tools' }] : []),
 ];
 ---
 <footer class="mt-24 border-t border-line">

@@ -6,7 +6,7 @@ const updated = 'October 20, 2026';
 ---
 <Page title="Terms of Use" description={`Terms of use for ${site.name}.`}>
   <p>Last updated: {updated}</p>
-  <p>By using {site.name} at {site.domain} you agree to these terms. If you do not agree, please do not use the site.</p>
+  <p>By using {site.name} at {site.host} you agree to these terms. If you do not agree, please do not use the site.</p>
   <h2>Use of the tool</h2>
   <p>The tool is free for personal and commercial use. Do not misuse the site, try to break it, or send automated bulk requests.</p>
   <h2>Lift safely</h2>
@@ -20,5 +20,5 @@ const updated = 'October 20, 2026';
   <h2>Changes</h2>
   <p>We may change the site or these terms at any time. The date above shows the latest update.</p>
   <h2>Contact</h2>
-  <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+  <p><a href={site.contactHref}>{site.contactLabel}</a></p>
 </Page>

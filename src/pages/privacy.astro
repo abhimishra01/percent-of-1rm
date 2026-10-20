@@ -6,7 +6,7 @@ const cookiesOn = Boolean(site.ga4 || site.adsense);
 ---
 <Page title="Privacy Policy" description={`How ${site.name} handles your data, cookies and ads.`}>
   <p>Last updated: {updated}</p>
-  <p>This policy explains what {site.name} ({site.domain}) collects and why.</p>
+  <p>This policy explains what {site.name} ({site.host}) collects and why.</p>
   <h2>What the tool does with your input</h2>
   <p>The tool runs in your browser. We do not send what you type to our servers. Your settings (units, bar, smallest plate, 1RM and percent) are saved in your browser's local storage on your device so they are ready next time. You can clear them in your browser settings.</p>
   <h2>Information we collect</h2>
@@ -24,7 +24,7 @@ const cookiesOn = Boolean(site.ga4 || site.adsense);
   <h2>Children</h2>
   <p>The site is not aimed at children under 13. We do not knowingly collect their data.</p>
   <h2>Your rights</h2>
-  <p>Depending on where you live, you may have the right to ask what data we hold, and to ask us to correct or delete it. Write to <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+  <p>Depending on where you live, you may have the right to ask what data we hold, and to ask us to correct or delete it. Write to <a href={site.contactHref}>{site.contactLabel}</a>.</p>
   <h2>Changes</h2>
   <p>We may update this policy. The date above shows the latest update.</p>
 </Page>
