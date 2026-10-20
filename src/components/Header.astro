@@ -16,7 +16,7 @@ const links = [
     </a>
     <div class="flex items-center gap-1">
       <a href="https://bingemind.com/tools/" class="whitespace-nowrap rounded-full px-3 py-3 text-sm font-medium text-brand-ink no-underline hover:underline max-[420px]:px-2">More free tools</a>
-      <nav aria-label="Main" class="flex items-center">
+      <nav aria-label="Main" class="flex items-center max-[480px]:hidden">
         {links.map((l) => (
           <a href={l.href} aria-current={path === l.href ? 'page' : undefined}
             class="rounded-full px-3 py-3 text-sm font-medium text-muted no-underline hover:text-ink aria-[current=page]:text-ink aria-[current=page]:bg-brand-soft max-[420px]:px-2">{l.label}</a>
