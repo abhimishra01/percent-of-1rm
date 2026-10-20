@@ -3,6 +3,7 @@ import '../styles/global.css';
 import site from '../site.config.ts';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import MoreTools from '../components/MoreTools.astro';
 import Analytics from '../components/Analytics.astro';
 import { url, pathInSite } from '../lib/url.ts';
 
@@ -56,6 +57,7 @@ const image = site.ogImage ? `${base}/${site.ogImage.replace(/^\//, '')}` : '';
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-30 focus:rounded-lg focus:bg-card focus:px-3 focus:py-2">Skip to content</a>
     <Header />
     <main id="main"><slot /></main>
+    <MoreTools />
     <Footer />
   </body>
 </html>
