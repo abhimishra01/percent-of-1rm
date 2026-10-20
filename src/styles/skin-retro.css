@@ -61,3 +61,4 @@
 :root[data-skin="retro"][data-theme] .chip { border-radius: 999px; }
 :root[data-skin="retro"][data-theme] .step:active, :root[data-skin="retro"][data-theme] .chip:active { transform: translate(3px, 3px); box-shadow: none; background: var(--card); }
 :root[data-skin="retro"][data-theme] .peer:checked + .seg-face { background: var(--brand); border-color: var(--edge); color: #fff; box-shadow: none; transform: translate(3px, 3px); }
+:root[data-skin="retro"][data-theme] .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--edge); color: #fff; box-shadow: none; transform: translate(3px, 3px); }

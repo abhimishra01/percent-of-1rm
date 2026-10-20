@@ -45,7 +45,7 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
         </div>
         <p id="note-pct" class="note" role="status"></p>
         <div id="pct-chips" class="mt-1 flex flex-wrap gap-2" role="group" aria-label="Common percents">
-          {[70, 75, 80, 85, 90, 95].map((p) => <button type="button" class="chip" data-p={p}>{p}%</button>)}
+          {[70, 75, 80, 85, 90, 95].map((p) => <button type="button" class="chip" data-p={p} aria-pressed={p === 85 ? 'true' : 'false'}>{p}%</button>)}
         </div>
         <div class="result min-h-[8.5rem]" id="result-pct">
           <p id="res-pct-big" class="min-h-[2.5rem] font-mono text-4xl font-bold tabular-nums"></p>
@@ -139,6 +139,8 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
   .step:active { background: var(--brand-soft); }
   .chip { min-height:2.75rem; min-width:3.25rem; padding:.25rem .75rem; border-radius:999px; border:1px solid var(--edge); background:var(--paper); font-weight:600; font-size:.9rem; font-variant-numeric:tabular-nums; cursor:pointer; }
   .chip:hover { border-color: var(--brand); }
+  .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color:#fff; }
+  .chip[aria-pressed="true"]::before { content: "\2713\00a0"; }
   .tbl td, .tbl th { vertical-align: top; }
   .tbl tbody tr.hit { background: var(--brand-soft); }
   .tbl .load { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; white-space: nowrap; }
@@ -153,6 +155,8 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
   import { chartRowsHtml, repRowsHtml } from '../lib/render.js';
 
   type Unit = 'lb' | 'kg';
+  // Smallest 1RM or weight the page accepts. Anything below 1 is not a real lift and gives silly percents.
+  const MIN_WEIGHT = 1;
   const QUICK: Record<Unit, number[]> = { lb: [135, 185, 225, 275, 315, 405], kg: [60, 80, 100, 120, 140, 180] };
   const STEP: Record<Unit, number> = { lb: 5, kg: 2.5 };
   const DEFAULT_CUSTOM: Record<Unit, number> = { lb: 25, kg: 10 };
@@ -176,9 +180,9 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
     const s = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (s && typeof s === 'object') {
       if (s.unit === 'lb' || s.unit === 'kg') state.unit = s.unit;
-      if (isWeight(s.oneRm) && s.oneRm > 0) state.oneRm = s.oneRm;
+      if (isWeight(s.oneRm) && s.oneRm >= MIN_WEIGHT) state.oneRm = s.oneRm;
       if (isWeight(s.pct) && s.pct <= 200) state.pct = s.pct;
-      if (isWeight(s.wt)) state.wt = s.wt;
+      if (isWeight(s.wt) && (s.wt === 0 || s.wt >= MIN_WEIGHT)) state.wt = s.wt;
       if ([10, 5, 2.5].includes(s.chartStep)) state.chartStep = s.chartStep;
       for (const u of ['lb', 'kg'] as Unit[]) {
         if (s.bar && typeof s.bar[u] === 'string' && (s.bar[u] === 'custom' || (BARS[u] as number[]).map(String).includes(s.bar[u]))) state.bar[u] = s.bar[u];
@@ -233,10 +237,14 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
 
     const bigEl = $('res-pct-big'), textEl = $('res-pct-text'), revEl = $('res-rev-text');
 
+    // Show which quick chips match the current numbers.
+    document.querySelectorAll<HTMLElement>('#chips .chip').forEach((c) => c.setAttribute('aria-pressed', String(Number(c.dataset.w) === state.oneRm)));
+    document.querySelectorAll<HTMLElement>('#pct-chips .chip').forEach((c) => c.setAttribute('aria-pressed', String(Number(c.dataset.p) === state.pct)));
+
     const bad = !(oneRm > 0) || !(bar > 0) || bar > MAX_WEIGHT;
     if (bad) {
       bigEl.textContent = 'Enter a number';
-      textEl.textContent = !(oneRm > 0) ? 'Enter your 1RM above 0 to see the weights.' : 'Enter the bar weight to see the plates.';
+      textEl.textContent = !(oneRm > 0) ? `Enter your 1RM, ${MIN_WEIGHT} or more, to see the weights.` : 'Enter the bar weight to see the plates.';
       revEl.textContent = '';
       $('chart-body').innerHTML = '';
       $('rep-body').innerHTML = '';
@@ -261,7 +269,9 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
     if (state.wt > 0) {
       const p = percentFromWeight(oneRm, state.wt);
       const base = `${fmt(state.wt)} ${u} is ${fmt1(p)}% of your ${fmt(oneRm)} ${u} 1RM.`;
-      revEl.textContent = p > 100 ? `${base} That is above your 1RM. Update your 1RM if you lifted it.` : `${base} ${repEstimateText(p / 100)}`.trim();
+      if (p > 1000) revEl.textContent = `${fmt(state.wt)} ${u} is more than 10 times your ${fmt(oneRm)} ${u} 1RM. Check both numbers.`;
+      else if (p < 1) revEl.textContent = `${fmt(state.wt)} ${u} is less than 1% of your ${fmt(oneRm)} ${u} 1RM.`;
+      else revEl.textContent = p > 100 ? `${base} That is above your 1RM. Update your 1RM if you lifted it.` : `${base} ${repEstimateText(p / 100)}`.trim();
     } else revEl.textContent = 'Enter a weight to see its percent of your 1RM.';
 
     // Chart and rep table
@@ -287,21 +297,22 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
   const nudge = (dir: 1 | -1) => setOneRm(Math.max(STEP[state.unit], (state.oneRm || 0) + dir * STEP[state.unit]));
 
   // Number fields: bad text shows the invalid state and a message; blur puts the used value back.
-  function numberField(id: string, get: () => number, set: (v: number) => void, max: number) {
+  function numberField(id: string, get: () => number, set: (v: number) => void, max: number, min = 0) {
     const el = $<HTMLInputElement>(id);
     el.addEventListener('input', () => {
       const f = readField(el.value, max);
-      el.setAttribute('aria-invalid', String(f.bad || f.clamped));
-      note(id, f.bad ? 'Use numbers only, like 225 or 102.5.' : f.clamped ? `The largest value is ${max === MAX_WEIGHT ? fmtMax : max}.` : '');
-      set(f.value);
+      const tooSmall = !f.bad && f.value > 0 && f.value < min;
+      el.setAttribute('aria-invalid', String(f.bad || f.clamped || tooSmall));
+      note(id, f.bad ? 'Use numbers only, like 225 or 102.5.' : tooSmall ? `The smallest value is ${min}.` : f.clamped ? `The largest value is ${max === MAX_WEIGHT ? fmtMax : max}.` : '');
+      set(tooSmall ? 0 : f.value);
       if (f.clamped) el.value = fmt(max);
       render();
     });
     el.addEventListener('blur', () => { if (get() > 0) { el.value = fmt(get()); el.removeAttribute('aria-invalid'); note(id); } });
   }
-  numberField('onerm', () => state.oneRm, (v) => { state.oneRm = v; anchor = { unit: state.unit, oneRm: v }; }, MAX_WEIGHT);
+  numberField('onerm', () => state.oneRm, (v) => { state.oneRm = v; anchor = { unit: state.unit, oneRm: v }; }, MAX_WEIGHT, MIN_WEIGHT);
   numberField('pct', () => state.pct, (v) => { state.pct = v; }, 200);
-  numberField('wt', () => state.wt, (v) => { state.wt = v; }, MAX_WEIGHT);
+  numberField('wt', () => state.wt, (v) => { state.wt = v; }, MAX_WEIGHT, MIN_WEIGHT);
   // Custom bar: a blank, zero or bad value must not hide behind an old one. It asks for a bar weight.
   {
     const el = $<HTMLInputElement>('custom-bar');
@@ -343,7 +354,7 @@ const numberBox = 'num rounded-xl border border-edge bg-paper px-3 text-center f
     const to = (e.target as HTMLInputElement).value as Unit;
     if (to === state.unit) return;
     state.oneRm = anchor.unit === to && anchor.oneRm > 0 ? anchor.oneRm : convertTarget(state.oneRm, state.unit, to);
-    if (state.wt > 0) state.wt = Math.round(convertWeight(state.wt, state.unit, to) * 2) / 2;
+    if (state.wt > 0) state.wt = Math.max(MIN_WEIGHT, Math.round(convertWeight(state.wt, state.unit, to) * 2) / 2);
     state.unit = to;
     buildStatic(); render();
   });
