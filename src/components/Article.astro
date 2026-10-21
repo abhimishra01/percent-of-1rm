@@ -5,6 +5,9 @@ import { chart, repTable, DEFAULT_PLATES, smallestOf, describeSide, fmt, fmt1 } 
 
 const plates = DEFAULT_PLATES.lb;
 const example = chart({ oneRm: 225, step: 5, bar: 45, smallest: smallestOf(plates), plates });
+const pick = (pcts) => example.filter((r) => pcts.includes(r.pct));
+const hyper = pick([80, 75, 70]);
+const fiveByFive = pick([90, 85, 80]);
 const reps = repTable({ oneRm: 225, bar: 45, smallest: smallestOf(plates), plates }).filter((r) => [1, 3, 5, 8, 10, 12].includes(r.reps));
 ---
 <section aria-labelledby="about-tool" class="mx-auto max-w-5xl px-4 pt-16">
@@ -50,6 +53,28 @@ const reps = repTable({ oneRm: 225, bar: 45, smallest: smallestOf(plates), plate
       </tbody>
     </table></div>
     <p>These are estimates. People differ, lifts differ, and the formulas drift apart above about 10 reps. Use them as a starting point and adjust to how the set feels.</p>
+
+    <h2>What percent of 1RM for hypertrophy</h2>
+    <p>For muscle size, most people train sets of about 8 to 12 reps. In the rep table above, that range falls between about 70 and 80 percent of 1RM. For a 225 lb max, 10 reps comes out at 75 percent by both formulas. Pick a percent in this band, then stop each set a rep or two before you fail. Here are the 70, 75 and 80 percent rows for a 225 lb 1RM:</p>
+    <div class="overflow-x-auto"><table>
+      <caption class="sr-only">Hypertrophy percents for a 225 lb 1RM on a 45 lb bar</caption>
+      <thead><tr><th scope="col">Percent</th><th scope="col">Load (lb)</th><th scope="col">Plates each side</th></tr></thead>
+      <tbody>
+        {hyper.map((r) => <tr><th scope="row">{fmt(r.pct)}%</th><td>{fmt(r.load)}</td><td>{r.load <= 45 ? 'Bar only' : describeSide(r.side)}</td></tr>)}
+      </tbody>
+    </table></div>
+    <p>Programs differ, so treat this as a starting range. If a set feels too easy, add a jump. If your form slips, drop one.</p>
+
+    <h2>What percent of 1RM for 5x5</h2>
+    <p>A 5x5 plan means 5 sets of 5 reps with the same weight. Five reps is worth about 86 percent of your 1RM by Epley and about 89 percent by Brzycki. Five hard sets in a row are a lot more work than one, so many lifters start 5x5 a little lighter, around 80 to 85 percent, and add weight when all 25 reps are clean. Here are the 80, 85 and 90 percent rows for a 225 lb 1RM:</p>
+    <div class="overflow-x-auto"><table>
+      <caption class="sr-only">Percents for 5x5 with a 225 lb 1RM on a 45 lb bar</caption>
+      <thead><tr><th scope="col">Percent</th><th scope="col">Load (lb)</th><th scope="col">Plates each side</th></tr></thead>
+      <tbody>
+        {fiveByFive.map((r) => <tr><th scope="row">{fmt(r.pct)}%</th><td>{fmt(r.load)}</td><td>{r.load <= 45 ? 'Bar only' : describeSide(r.side)}</td></tr>)}
+      </tbody>
+    </table></div>
+    <p>These are estimates, not rules. If you cannot finish five reps on the last set, use the lighter row next time.</p>
 
     <h2>Common percents at a glance</h2>
     <p>Read the table the other way and you can guess how hard a percent is. By both formulas, 90 percent is a set of about 3 to 5 reps, 85 percent is about 5 or 6, 80 percent is about 7 or 8, and 75 percent is about 10. 70 percent is about 12 to 13 reps, and below that the estimates get loose. Treat these as rough guides, since sleep, stress and the lift itself all change what you can do on the day.</p>

@@ -6,7 +6,7 @@ const config = {
   cloudflareProject: 'percent-of-1rm',               // Cloudflare Pages project name (used by npm run deploy)
   keyword: 'percent of 1rm calculator',              // main keyword (search phrase)
   h1: 'Percent of 1RM calculator',                   // visible page heading
-  title: 'Percent of 1RM Calculator: Weights and Plates', // home page title, under 60 chars
+  title: 'Percent of 1RM Calculator: RM Calculator and Plates', // home page title, under 60 chars
   tagline: 'Free and fast',
   description:
     'Enter your 1RM and get 50% to 100% as loadable weights with plates per side. lb and kg. Also finds the percent of any weight, plus rep max estimates.',
