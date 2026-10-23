@@ -31,7 +31,7 @@ export default {
   slug,
   canonicalBase: `https://bingemind.com/${slug}`,
   host: bingemind ? `bingemind.com/${slug}/` : config.domain,
-  owner: bingemind ? 'Bingemind' : config.owner,
+  owner: bingemind ? 'Bingemind (Abhishek Mishra)' : config.owner,
   // No invented mailbox: Bingemind builds link to the Bingemind contact section.
   contactHref: bingemind ? 'https://bingemind.com/#contact' : `mailto:${config.email}`,
   contactLabel: bingemind ? 'bingemind.com/#contact' : config.email,
